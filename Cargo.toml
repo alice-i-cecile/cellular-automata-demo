@@ -5,3 +5,7 @@ edition = "2024"
 
 [dependencies]
 bevy = "0.16.0"
+bevy-inspector-egui = "0.31.0"
+bevy_console = "0.14.0"
+bevy_egui = "0.34.1"
+bevy_simple_subsecond_system = "0.1.11"
