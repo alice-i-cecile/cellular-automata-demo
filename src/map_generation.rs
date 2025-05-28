@@ -1,0 +1,77 @@
+use bevy::prelude::*;
+use bevy_prng::WyRand;
+use bevy_rand::global::GlobalEntropy;
+use rand::seq::IndexedRandom;
+use strum::IntoEnumIterator;
+
+use crate::{Position, SuccessionState};
+
+pub struct MapGenerationPlugin;
+
+impl Plugin for MapGenerationPlugin {
+    fn build(&self, app: &mut App) {
+        app.insert_resource(MapSize {
+            width: 10,
+            height: 10,
+        })
+        .add_systems(Startup, spawn_tiles);
+    }
+}
+
+#[derive(Resource)]
+struct MapSize {
+    width: i32,
+    height: i32,
+}
+
+impl SuccessionState {
+    /// The non-normalized weight of each state in the initial distribution used to generate the initial map.
+    ///
+    /// Increasing the weight of a state will increase the likelihood of that state appearing in the initial map.
+    /// Decreasing the weight of a state will decrease the likelihood of that state appearing in the initial map.
+    /// The weights are not normalized, so they can be any positive value,
+    /// or zero to indicate that the state should not appear in the initial map.
+    fn initial_distribution_weight(&self) -> f32 {
+        match self {
+            SuccessionState::Meadow => 1.0,
+            SuccessionState::Shrubland => 0.0,
+            SuccessionState::ShadeIntolerantForest => 0.0,
+            SuccessionState::ShadeTolerantForest => 0.0,
+        }
+    }
+
+    // TODO: use strum for enum iteration
+    fn initial_distribution() -> Vec<(SuccessionState, f32)> {
+        let mut vec = Vec::new();
+
+        for variant in SuccessionState::iter() {
+            vec.push((variant, variant.initial_distribution_weight()));
+        }
+
+        vec
+    }
+}
+
+fn spawn_tiles(mut commands: Commands, map_size: Res<MapSize>, mut rng: GlobalEntropy<WyRand>) {
+    let state_weights = SuccessionState::initial_distribution();
+
+    // PERF: we could speed this up by using spawn_batch
+    // PERF: generating multiple random choices at once is significantly faster than generating them one by one.
+    for x in 0..map_size.width {
+        for y in 0..map_size.height {
+            let position = Position { x, y };
+            let transform = position.to_transform();
+            let succession_state = state_weights
+                .choose_weighted(&mut rng, |item| item.1)
+                .unwrap()
+                .0;
+            let sprite = Sprite {
+                color: succession_state.color(),
+                custom_size: Some(Vec2::splat(Position::PIXELS_PER_TILE)),
+                ..Default::default()
+            };
+
+            commands.spawn((position, sprite, transform, succession_state));
+        }
+    }
+}
