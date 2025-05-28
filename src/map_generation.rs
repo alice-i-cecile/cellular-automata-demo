@@ -34,7 +34,7 @@ impl SuccessionState {
     fn initial_distribution_weight(&self) -> f32 {
         match self {
             SuccessionState::Meadow => 1.0,
-            SuccessionState::Shrubland => 0.0,
+            SuccessionState::Shrubland => 1.0,
             SuccessionState::ShadeIntolerantForest => 0.0,
             SuccessionState::ShadeTolerantForest => 0.0,
         }
