@@ -1,14 +1,14 @@
 use bevy::{platform::collections::HashMap, prelude::*};
 use strum::IntoEnumIterator;
 
-use crate::SuccessionState;
+use crate::{SuccessionState, transition::run_transition};
 
 pub struct GraphicsPlugin;
 
 impl Plugin for GraphicsPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<TileImages>()
-            .add_systems(Update, update_tile_graphics);
+            .add_systems(Update, update_tile_graphics.after(run_transition));
     }
 }
 
