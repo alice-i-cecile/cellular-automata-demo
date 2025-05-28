@@ -6,6 +6,7 @@ use bevy_rand::plugin::EntropyPlugin;
 use strum_macros::EnumIter;
 
 mod camera;
+mod dev_tools;
 mod graphics;
 mod map_generation;
 mod transition;
@@ -16,14 +17,18 @@ fn main() {
         .add_plugins(EntropyPlugin::<WyRand>::default())
         .add_plugins((
             camera::CameraPlugin,
+            dev_tools::DevToolsPlugin,
             graphics::GraphicsPlugin,
             map_generation::MapGenerationPlugin,
             transition::TransitionPlugin,
         ))
+        // Types need to be registered for bevy_inspector_egui
+        .register_type::<Position>()
+        .register_type::<SuccessionState>()
         .run();
 }
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
 struct Position {
     x: i32,
     y: i32,
@@ -41,7 +46,7 @@ impl Position {
     }
 }
 
-#[derive(Component, PartialEq, Eq, Hash, Debug, Clone, Copy, EnumIter)]
+#[derive(Component, Reflect, PartialEq, Eq, Hash, Debug, Clone, Copy, EnumIter)]
 #[require(Sprite)]
 enum SuccessionState {
     Meadow,

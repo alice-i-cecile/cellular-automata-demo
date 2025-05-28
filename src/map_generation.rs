@@ -70,8 +70,9 @@ fn spawn_tiles(mut commands: Commands, map_size: Res<MapSize>, mut rng: GlobalEn
                 custom_size: Some(Vec2::splat(Position::PIXELS_PER_TILE)),
                 ..Default::default()
             };
+            let name = Name::new(format!("Tile ({x}, {y})"));
 
-            commands.spawn((position, sprite, transform, succession_state));
+            commands.spawn((position, sprite, transform, succession_state, name));
         }
     }
 }
