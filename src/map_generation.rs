@@ -25,6 +25,7 @@ impl Plugin for MapGenerationPlugin {
 }
 
 #[derive(Resource, Reflect)]
+#[reflect(Resource)]
 struct MapSize {
     width: i32,
     height: i32,

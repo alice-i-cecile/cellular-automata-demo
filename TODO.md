@@ -31,7 +31,8 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 ## Better dev tooling
 
-- [ ] show resources in the inspector
+- [x] show resources in the inspector
+  - needed to add `#[reflect(Resource)]` and register the type
 - [ ] capture logs to the console
   - tried to copy the [example](https://github.com/RichoDemus/bevy-console/blob/main/examples/capture_bevy_logs.rs), but nothing was shown
 
