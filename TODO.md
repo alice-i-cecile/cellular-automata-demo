@@ -38,7 +38,7 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 ## Camera time
 
-- [ ] camera pan
+- [x] camera pan
 - [ ] camera zoom
 - [ ] automatically scale to extents
 
@@ -77,3 +77,8 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [ ] visualize transition rules automatically
 - [ ] add particles
 - [ ] add sound effects
+
+## Key bindings
+
+- [] swap to `bevy_enhanced_input`
+- [] add a keybindings menu
