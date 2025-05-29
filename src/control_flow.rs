@@ -15,6 +15,7 @@ impl Plugin for ControlFlowPlugin {
             .add_event::<StepSimulation>()
             .add_event::<SetSimulationTimestep>()
             .insert_resource(SimulationStepTime(Duration::from_millis(1000)))
+            .register_type::<SimulationStepTime>()
             .add_systems(
                 Update,
                 run_simulation
@@ -35,7 +36,8 @@ impl Plugin for ControlFlowPlugin {
 }
 
 /// The amount of real world time that each simulation step should take.
-#[derive(Resource)]
+#[derive(Resource, Reflect)]
+#[reflect(Resource)]
 struct SimulationStepTime(Duration);
 
 /// A custom run condition to control whether or not the simulation is ready to run.
@@ -108,7 +110,7 @@ fn step_simulation(mut commands: Commands) {
     commands.run_system_cached(run_simulation);
 }
 
-#[derive(Event)]
+#[derive(Event, Debug)]
 pub struct SetSimulationTimestep {
     pub milliseconds: u64,
 }
