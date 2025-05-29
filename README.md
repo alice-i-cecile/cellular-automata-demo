@@ -6,7 +6,7 @@ A proof-of-concept for using Bevy for scientific simulation, with an emphasis on
 
 1. Clone this repository.
 2. Follow Bevy's [instructions](https://bevyengine.org/learn/) to set up Bevy and Rust on your machine.
-3. Call `cargo run --release` to run the simulation.
+3. Call `cargo run` to run the simulation.
 
 ## Development Tooling
 
