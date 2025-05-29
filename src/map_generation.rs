@@ -65,7 +65,6 @@ impl TileKind {
         }
     }
 
-    // TODO: use strum for enum iteration
     fn initial_distribution() -> Vec<(TileKind, f32)> {
         let mut vec = Vec::new();
 
