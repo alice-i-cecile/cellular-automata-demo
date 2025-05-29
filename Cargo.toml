@@ -15,3 +15,15 @@ clap = "4.5.39"
 rand = "0.9.1"
 strum = "0.27.1"
 strum_macros = "0.27.1"
+
+[profile]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"

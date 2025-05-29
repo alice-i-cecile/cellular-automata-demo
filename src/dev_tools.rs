@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy_console::{AddConsoleCommand, ConsoleCommand, ConsolePlugin};
 use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use bevy_simple_subsecond_system::SimpleSubsecondPlugin;
 use clap::Parser;
 
 use crate::{
@@ -22,6 +23,10 @@ impl Plugin for DevToolsPlugin {
             },
             // Open the console by pressing ~
             ConsolePlugin,
+            // This work is still extremely experimental and involves system configuration;
+            // you can safely comment this line out if the instructions at
+            // https://github.com/TheBevyFlock/bevy_simple_subsecond_system don't work for you.
+            SimpleSubsecondPlugin::default(),
             WorldInspectorPlugin::new(),
         ));
 
