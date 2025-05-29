@@ -33,6 +33,7 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 - [ ] show resources in the inspector
 - [ ] capture logs to the console
+  - tried to copy the [example](https://github.com/RichoDemus/bevy-console/blob/main/examples/capture_bevy_logs.rs), but nothing was shown
 
 ## Camera time
 
