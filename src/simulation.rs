@@ -5,16 +5,27 @@ use bevy_rand::prelude::Entropy;
 use bevy_simple_subsecond_system::hot;
 use rand::Rng;
 use rand::seq::IndexedRandom;
+use strum_macros::EnumIter;
 
 use crate::control_flow::Simulation;
-use crate::tile_data::TileKind;
 
 pub struct TransitionPlugin;
 
 impl Plugin for TransitionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Simulation, (undisturbed_succession, start_fires).chain());
+        app.register_type::<TileKind>()
+            .add_systems(Simulation, (undisturbed_succession, start_fires).chain());
     }
+}
+
+#[derive(Component, Reflect, PartialEq, Eq, Hash, Debug, Clone, Copy, EnumIter)]
+pub enum TileKind {
+    Meadow,
+    Shrubland,
+    ShadeIntolerantForest,
+    ShadeTolerantForest,
+    Water,
+    Fire,
 }
 
 #[hot]

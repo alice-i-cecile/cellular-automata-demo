@@ -6,7 +6,8 @@ use rand::seq::IndexedRandom;
 use strum::IntoEnumIterator;
 
 use crate::SimState;
-use crate::tile_data::{Position, Tile, TileKind};
+use crate::simulation::TileKind;
+use crate::tile_data::{Position, Tile};
 
 // PERF: these systems would all be faster as exclusive systems to avoid command overhead
 pub struct MapGenerationPlugin;

@@ -2,7 +2,7 @@ use bevy::{platform::collections::HashMap, prelude::*};
 use strum::IntoEnumIterator;
 
 use crate::control_flow::run_simulation;
-use crate::tile_data::TileKind;
+use crate::simulation::TileKind;
 
 pub struct GraphicsPlugin;
 
