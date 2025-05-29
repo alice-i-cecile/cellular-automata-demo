@@ -40,7 +40,6 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 - [x] camera pan
 - [x] camera zoom
-- [ ] automatically scale to extents
 
 ## Fancier automata
 
@@ -57,6 +56,7 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 ## GUI controls
 
+- [ ] embed simulation in a viewport
 - [ ] GUI for pause and unpause
 - [ ] GUI for reset
 - [ ] GUI for step
@@ -77,8 +77,13 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [ ] visualize transition rules automatically
 - [ ] add particles
 - [ ] add sound effects
+
+## Better camera
+
 - [ ] scale pan speed with zoom level
 - [ ] drag to pan
+- [ ] automatically scale to extents
+- [ ] add a bit of momentum to camera pan and zoom
 
 ## Key bindings
 
