@@ -1879,6 +1879,7 @@ dependencies = [
  "bevy_prng",
  "bevy_rand",
  "bevy_simple_subsecond_system",
+ "clap",
  "rand 0.9.1",
  "strum 0.27.1",
  "strum_macros 0.27.1",

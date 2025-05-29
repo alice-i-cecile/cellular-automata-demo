@@ -11,6 +11,7 @@ bevy_egui = "0.34.1"
 bevy_prng = { version = "0.11.0", features = ["wyrand"] }
 bevy_rand = "0.11.0"
 bevy_simple_subsecond_system = "0.1.11"
+clap = "4.5.39"
 rand = "0.9.1"
 strum = "0.27.1"
 strum_macros = "0.27.1"
