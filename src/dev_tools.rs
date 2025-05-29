@@ -4,7 +4,7 @@ use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use clap::Parser;
 
-use crate::{SimState, tile_data::Tile};
+use crate::control_flow::ResetSimulation;
 
 pub struct DevToolsPlugin;
 
@@ -20,8 +20,10 @@ impl Plugin for DevToolsPlugin {
             WorldInspectorPlugin::new(),
         ));
 
-        // Resetting
-        app.add_console_command::<ResetCommand, _>(reset_simulation_state);
+        // These commands simply send events that can be handled by the simulation logic.
+        // The duplication between the various commands and events is intentional,
+        // as it allows us to easily trigger the same logic via alternative means.
+        app.add_console_command::<ResetCommand, _>(reset_command);
     }
 }
 
@@ -30,24 +32,11 @@ impl Plugin for DevToolsPlugin {
 #[command(name = "reset")]
 struct ResetCommand;
 
-fn reset_simulation_state(
+fn reset_command(
     mut console_command: ConsoleCommand<ResetCommand>,
-    mut commands: Commands,
-    tiles: Query<Entity, With<Tile>>,
-    mut next_state: ResMut<NextState<SimState>>,
+    mut event_writer: EventWriter<ResetSimulation>,
 ) {
-    if console_command.take().is_none() {
-        // If the command was not invoked, do nothing
-        return;
+    if console_command.take().is_some() {
+        event_writer.write(ResetSimulation);
     }
-
-    info!("Resetting simulation state. Clearing all tiles and transitioning back to Generate.");
-
-    // Remove all tiles from the map
-    for tile in tiles.iter() {
-        commands.entity(tile).despawn();
-    }
-
-    // Reset the next state to Generate
-    next_state.set(SimState::Generate);
 }
