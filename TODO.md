@@ -39,7 +39,7 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 ## Camera time
 
 - [x] camera pan
-- [ ] camera zoom
+- [x] camera zoom
 - [ ] automatically scale to extents
 
 ## Fancier automata
@@ -77,6 +77,8 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [ ] visualize transition rules automatically
 - [ ] add particles
 - [ ] add sound effects
+- [ ] scale pan speed with zoom level
+- [ ] drag to pan
 
 ## Key bindings
 
