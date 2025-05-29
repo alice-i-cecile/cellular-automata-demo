@@ -19,6 +19,10 @@ strum_macros = "0.27.1"
 
 [profile]
 
+# Enable max optimizations for dependencies, but not for our code:
+[profile.dev.package."*"]
+opt-level = 3
+
 [profile.wasm-dev]
 inherits = "dev"
 opt-level = 1
