@@ -20,13 +20,14 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [x] pause and unpause
 - [x] reset
 - [x] step
-- [ ] modify the time step
+- [x] modify the time step
 
 ## Dev tooling basics
 
 - [x] set up bevy_console
 - [x] set up bevy-inspector-egui
 - [ ] set up hotpatching
+- [ ] semi-optimized build settings
 
 ## Better dev tooling
 

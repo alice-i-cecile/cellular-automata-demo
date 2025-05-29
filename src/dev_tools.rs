@@ -6,7 +6,9 @@ use clap::Parser;
 
 use crate::{
     SimState,
-    control_flow::{PauseSimulation, ResetSimulation, StepSimulation, UnpauseSimulation},
+    control_flow::{
+        PauseSimulation, ResetSimulation, SetSimulationTimestep, StepSimulation, UnpauseSimulation,
+    },
 };
 
 pub struct DevToolsPlugin;
@@ -29,7 +31,8 @@ impl Plugin for DevToolsPlugin {
         app.add_console_command::<ResetCommand, _>(reset_command)
             .add_console_command::<PauseCommand, _>(pause_command)
             .add_console_command::<UnpauseCommand, _>(unpause_command)
-            .add_console_command::<StepCommand, _>(step_command);
+            .add_console_command::<StepCommand, _>(step_command)
+            .add_console_command::<SetTimestepCommand, _>(set_timestep_command);
     }
 }
 
@@ -99,5 +102,26 @@ fn step_command(
                 event_writer.write(StepSimulation);
             }
         }
+    }
+}
+
+/// Sets the simulation timestep to a specific value in milliseconds.
+///
+/// Lower values will make the simulation run faster, while higher values will slow it down.
+/// The default value is 1000 milliseconds (1 second).
+#[derive(Parser, ConsoleCommand)]
+#[command(name = "set_timestep")]
+struct SetTimestepCommand {
+    milliseconds: u64,
+}
+
+fn set_timestep_command(
+    mut console_command: ConsoleCommand<SetTimestepCommand>,
+    mut event_writer: EventWriter<SetSimulationTimestep>,
+) {
+    if let Some(Ok(command)) = console_command.take() {
+        event_writer.write(SetSimulationTimestep {
+            milliseconds: command.milliseconds,
+        });
     }
 }
