@@ -8,8 +8,8 @@ mod camera;
 mod dev_tools;
 mod graphics;
 mod map_generation;
+mod simulation;
 mod tile_data;
-mod transition;
 
 fn main() {
     App::new()
@@ -21,7 +21,7 @@ fn main() {
             graphics::GraphicsPlugin,
             map_generation::MapGenerationPlugin,
             tile_data::TileDataPlugin,
-            transition::TransitionPlugin,
+            simulation::TransitionPlugin,
         ))
         .init_state::<SimState>()
         .run();

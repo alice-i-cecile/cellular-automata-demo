@@ -1,8 +1,8 @@
 use bevy::{platform::collections::HashMap, prelude::*};
 use strum::IntoEnumIterator;
 
+use crate::simulation::run_transition;
 use crate::tile_data::SuccessionState;
-use crate::transition::run_transition;
 
 pub struct GraphicsPlugin;
 
