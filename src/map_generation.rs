@@ -5,7 +5,7 @@ use rand::seq::IndexedRandom;
 use strum::IntoEnumIterator;
 
 use crate::SimState;
-use crate::tile_data::{Position, SuccessionState};
+use crate::tile_data::{Position, SuccessionState, Tile};
 
 pub struct MapGenerationPlugin;
 
@@ -78,7 +78,7 @@ fn spawn_tiles(mut commands: Commands, map_size: Res<MapSize>, mut rng: GlobalEn
             };
             let name = Name::new(format!("Tile ({x}, {y})"));
 
-            commands.spawn((position, sprite, transform, succession_state, name));
+            commands.spawn((Tile, position, sprite, transform, succession_state, name));
         }
     }
 }

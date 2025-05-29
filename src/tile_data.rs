@@ -6,10 +6,15 @@ pub struct TileDataPlugin;
 impl Plugin for TileDataPlugin {
     fn build(&self, app: &mut App) {
         // Types need to be manually registered for bevy-inspector-egui
-        app.register_type::<Position>()
+        app.register_type::<Tile>()
+            .register_type::<Position>()
             .register_type::<SuccessionState>();
     }
 }
+
+/// A tag component for tiles in the map.
+#[derive(Component, Reflect, Default)]
+pub struct Tile;
 
 #[derive(Component, Reflect)]
 pub struct Position {
@@ -30,7 +35,6 @@ impl Position {
 }
 
 #[derive(Component, Reflect, PartialEq, Eq, Hash, Debug, Clone, Copy, EnumIter)]
-#[require(Sprite)]
 pub enum SuccessionState {
     Meadow,
     Shrubland,
