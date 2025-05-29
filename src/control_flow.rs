@@ -4,7 +4,6 @@ use bevy::ecs::schedule::ScheduleLabel;
 use bevy::prelude::*;
 
 use crate::SimState;
-use crate::tile_data::Tile;
 
 pub struct ControlFlowPlugin;
 
@@ -75,17 +74,10 @@ pub fn run_simulation(world: &mut World) {
 #[derive(Event)]
 pub struct ResetSimulation;
 
-fn reset_simulation_state(
-    mut commands: Commands,
-    tiles: Query<Entity, With<Tile>>,
-    mut next_state: ResMut<NextState<SimState>>,
-) {
-    info!("Resetting simulation state. Clearing all tiles and transitioning back to Generate.");
-
-    // Remove all tiles from the map
-    for tile in tiles.iter() {
-        commands.entity(tile).despawn();
-    }
+fn reset_simulation_state(mut next_state: ResMut<NextState<SimState>>) {
+    info!(
+        "Resetting simulation state. Clearing all simulation data and transitioning back to Generate."
+    );
 
     // Reset the next state to Generate
     next_state.set(SimState::Generate);

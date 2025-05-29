@@ -1,12 +1,14 @@
 use bevy::prelude::*;
 use bevy_prng::WyRand;
 use bevy_rand::global::GlobalEntropy;
+use bevy_simple_subsecond_system::hot;
 use rand::seq::IndexedRandom;
 use strum::IntoEnumIterator;
 
 use crate::SimState;
 use crate::tile_data::{Position, Tile, TileKind};
 
+// PERF: these systems would all be faster as exclusive systems to avoid command overhead
 pub struct MapGenerationPlugin;
 
 impl Plugin for MapGenerationPlugin {
@@ -16,15 +18,21 @@ impl Plugin for MapGenerationPlugin {
                 width: 10,
                 height: 10,
             })
-            .add_systems(OnEnter(SimState::Generate), spawn_tiles)
+            .add_systems(
+                OnEnter(SimState::Generate),
+                (clean_up_sim_state, spawn_tiles).chain(),
+            )
             .add_systems(
                 Update,
-                finish_generation.run_if(in_state(SimState::Generate)),
+                (
+                    regenerate_when_settings_change,
+                    finish_generation.run_if(in_state(SimState::Generate)),
+                ),
             );
     }
 }
 
-#[derive(Resource, Reflect)]
+#[derive(Resource, Reflect, Debug)]
 #[reflect(Resource)]
 struct MapSize {
     width: i32,
@@ -59,6 +67,12 @@ impl TileKind {
     }
 }
 
+fn clean_up_sim_state(mut commands: Commands, query: Query<Entity, With<Tile>>) {
+    for entity in query.iter() {
+        commands.entity(entity).despawn();
+    }
+}
+
 fn spawn_tiles(mut commands: Commands, map_size: Res<MapSize>, mut rng: GlobalEntropy<WyRand>) {
     let state_weights = TileKind::initial_distribution();
 
@@ -87,4 +101,15 @@ fn spawn_tiles(mut commands: Commands, map_size: Res<MapSize>, mut rng: GlobalEn
 fn finish_generation(mut next_state: ResMut<NextState<SimState>>) {
     info!("Map generation complete, transitioning to Run state");
     next_state.set(SimState::Run);
+}
+
+#[hot]
+fn regenerate_when_settings_change(
+    map_size: Res<MapSize>,
+    mut next_state: ResMut<NextState<SimState>>,
+) {
+    if map_size.is_changed() {
+        info!("Map size changed to {:?}, regenerating map", *map_size);
+        next_state.set(SimState::Generate);
+    }
 }
