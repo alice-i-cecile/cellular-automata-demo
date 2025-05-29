@@ -1,5 +1,4 @@
 use bevy::{platform::collections::HashMap, prelude::*};
-use bevy_simple_subsecond_system::hot;
 use strum::IntoEnumIterator;
 
 use crate::control_flow::run_simulation;
@@ -31,11 +30,6 @@ impl FromWorld for TileImages {
     }
 }
 
-// This system can be hotpatched!
-// Try changing this system, or change the colors in `TileKind::color`
-// and see the changes take effect immediately without restarting the app.
-// FIXME: doesn't actually seem to work?
-#[hot]
 fn update_tile_graphics(
     mut tile_query: Query<(&mut Sprite, &TileKind), Changed<TileKind>>,
     tile_materials: ResMut<TileImages>,

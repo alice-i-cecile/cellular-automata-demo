@@ -26,7 +26,7 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 - [x] set up bevy_console
 - [x] set up bevy-inspector-egui
-- [ ] set up hotpatching
+- [x] set up hotpatching
 - [ ] semi-optimized build settings
 
 ## Better dev tooling
