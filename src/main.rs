@@ -5,6 +5,7 @@ use bevy_prng::WyRand;
 use bevy_rand::plugin::EntropyPlugin;
 
 mod camera;
+mod control_flow;
 mod dev_tools;
 mod graphics;
 mod map_generation;
@@ -17,6 +18,7 @@ fn main() {
         .add_plugins(EntropyPlugin::<WyRand>::default())
         .add_plugins((
             camera::CameraPlugin,
+            control_flow::ControlFlowPlugin,
             dev_tools::DevToolsPlugin,
             graphics::GraphicsPlugin,
             map_generation::MapGenerationPlugin,

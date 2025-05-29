@@ -1,38 +1,18 @@
-use core::time::Duration;
-
-use bevy::ecs::schedule::ScheduleLabel;
 use bevy::prelude::*;
-use bevy::time::common_conditions::on_timer;
 use bevy_prng::WyRand;
 use bevy_rand::global::GlobalEntropy;
 use bevy_rand::prelude::Entropy;
 use rand::seq::IndexedRandom;
 
-use crate::SimState;
+use crate::control_flow::Simulation;
 use crate::tile_data::SuccessionState;
 
 pub struct TransitionPlugin;
 
 impl Plugin for TransitionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            Update,
-            run_transition
-                .run_if(in_state(SimState::Run))
-                .run_if(on_timer(Duration::from_secs(1))),
-        )
-        .add_systems(Simulation, apply_transition);
+        app.add_systems(Simulation, apply_transition);
     }
-}
-
-/// A dedicated schedule for all of our simulation logic,
-/// allowing us to advance it independently of rendering or player input.
-#[derive(ScheduleLabel, Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct Simulation;
-
-pub fn run_transition(world: &mut World) {
-    // Just call `world.run_schedule` whenever you feel like it, with whatever logic you please!
-    world.run_schedule(Simulation);
 }
 
 fn apply_transition(
