@@ -12,6 +12,8 @@ pub struct ControlFlowPlugin;
 impl Plugin for ControlFlowPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<ResetSimulation>()
+            .add_event::<PauseSimulation>()
+            .add_event::<UnpauseSimulation>()
             .add_systems(
                 Update,
                 run_simulation
@@ -20,7 +22,11 @@ impl Plugin for ControlFlowPlugin {
             )
             .add_systems(
                 PreUpdate,
-                reset_simulation_state.run_if(on_event::<ResetSimulation>),
+                (
+                    reset_simulation_state.run_if(on_event::<ResetSimulation>),
+                    pause_simulation.run_if(on_event::<PauseSimulation>),
+                    unpause_simulation.run_if(on_event::<UnpauseSimulation>),
+                ),
             );
     }
 }
@@ -52,4 +58,20 @@ fn reset_simulation_state(
 
     // Reset the next state to Generate
     next_state.set(SimState::Generate);
+}
+
+#[derive(Event)]
+pub struct PauseSimulation;
+
+#[derive(Event)]
+pub struct UnpauseSimulation;
+
+fn pause_simulation(mut next_state: ResMut<NextState<SimState>>) {
+    info!("Simulation paused.");
+    next_state.set(SimState::Paused);
+}
+
+fn unpause_simulation(mut next_state: ResMut<NextState<SimState>>) {
+    info!("Simulation unpaused.");
+    next_state.set(SimState::Run);
 }

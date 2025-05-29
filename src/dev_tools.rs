@@ -4,7 +4,7 @@ use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use clap::Parser;
 
-use crate::control_flow::ResetSimulation;
+use crate::control_flow::{PauseSimulation, ResetSimulation, UnpauseSimulation};
 
 pub struct DevToolsPlugin;
 
@@ -23,7 +23,9 @@ impl Plugin for DevToolsPlugin {
         // These commands simply send events that can be handled by the simulation logic.
         // The duplication between the various commands and events is intentional,
         // as it allows us to easily trigger the same logic via alternative means.
-        app.add_console_command::<ResetCommand, _>(reset_command);
+        app.add_console_command::<ResetCommand, _>(reset_command)
+            .add_console_command::<PauseCommand, _>(pause_command)
+            .add_console_command::<UnpauseCommand, _>(unpause_command);
     }
 }
 
@@ -38,5 +40,33 @@ fn reset_command(
 ) {
     if console_command.take().is_some() {
         event_writer.write(ResetSimulation);
+    }
+}
+
+/// Pauses the simulation.
+#[derive(Parser, ConsoleCommand)]
+#[command(name = "pause")]
+struct PauseCommand;
+
+fn pause_command(
+    mut console_command: ConsoleCommand<PauseCommand>,
+    mut event_writer: EventWriter<PauseSimulation>,
+) {
+    if console_command.take().is_some() {
+        event_writer.write(PauseSimulation);
+    }
+}
+
+/// Unpauses the simulation.
+#[derive(Parser, ConsoleCommand)]
+#[command(name = "unpause")]
+struct UnpauseCommand;
+
+fn unpause_command(
+    mut console_command: ConsoleCommand<UnpauseCommand>,
+    mut event_writer: EventWriter<UnpauseSimulation>,
+) {
+    if console_command.take().is_some() {
+        event_writer.write(UnpauseSimulation);
     }
 }

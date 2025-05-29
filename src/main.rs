@@ -34,4 +34,5 @@ pub enum SimState {
     #[default]
     Generate,
     Run,
+    Paused,
 }
