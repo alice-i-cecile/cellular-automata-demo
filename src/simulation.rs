@@ -1,3 +1,10 @@
+//! The simulation logic for the demo simulation.
+//!
+//! In this case, we're doing a simple grid-based
+//! forest succession simulation with fire spread mechanics.
+//!
+//! All of this can be easily ripped out and replaced with your own simulation logic!
+
 use bevy::prelude::*;
 use bevy_prng::WyRand;
 use bevy_rand::global::GlobalEntropy;

@@ -1,3 +1,5 @@
+//! A dead simple spatial index showing off the power of immutable components + hooks.
+
 use bevy::ecs::component::HookContext;
 use bevy::ecs::world::DeferredWorld;
 use bevy::platform::collections::HashMap;

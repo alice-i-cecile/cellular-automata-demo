@@ -1,3 +1,7 @@
+//! Camera controls for the simulation.
+//!
+//! These can easily be adapted to any 2D simulation or RTS-style game.
+
 use bevy::{input::mouse::AccumulatedMouseScroll, prelude::*};
 use bevy_simple_subsecond_system::hot;
 

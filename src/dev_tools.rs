@@ -1,3 +1,7 @@
+//! Assorted tools for rapid development and debugging of the simulation.
+//!
+//! Very handy for all sorts of projects!
+
 use bevy::prelude::*;
 use bevy_console::{AddConsoleCommand, ConsoleCommand, ConsolePlugin};
 use bevy_egui::EguiPlugin;

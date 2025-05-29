@@ -76,7 +76,6 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [ ] use sprites for each type of type of terrain
 - [ ] add a map border
 - [ ] visualize transition rules automatically
-- [ ] add particles
 - [ ] add sound effects
 
 ## Better camera

@@ -1,3 +1,8 @@
+//! Generates (and regenerates) the map at the start of each simulation run.
+//!
+//! The general structure here is helpful to learn from,
+//! but unless you're building a grid-based simulation pretty much all of this can be thrown out.
+
 use bevy::prelude::*;
 use bevy_prng::WyRand;
 use bevy_rand::global::GlobalEntropy;

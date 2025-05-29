@@ -1,3 +1,8 @@
+//! Control flow (pause, reset, step, etc.) for the simulation.
+//!
+//! This general structure is great for pretty much any turn-based simulation (or game),
+//! and can be adapted to fit your needs.
+
 use core::time::Duration;
 
 use bevy::ecs::schedule::ScheduleLabel;

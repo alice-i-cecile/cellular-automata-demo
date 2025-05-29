@@ -1,3 +1,5 @@
+//! Renders the graphics for the simulation.
+
 use bevy::{platform::collections::HashMap, prelude::*};
 use strum::IntoEnumIterator;
 
