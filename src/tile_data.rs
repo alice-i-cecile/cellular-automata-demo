@@ -41,4 +41,5 @@ pub enum TileKind {
     ShadeIntolerantForest,
     ShadeTolerantForest,
     Water,
+    Fire,
 }

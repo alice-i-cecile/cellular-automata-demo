@@ -55,6 +55,7 @@ impl TileKind {
             ShadeIntolerantForest => 0.0,
             ShadeTolerantForest => 0.0,
             Water => 1.0,
+            Fire => 0.0,
         }
     }
 

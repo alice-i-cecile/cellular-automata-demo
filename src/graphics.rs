@@ -58,6 +58,7 @@ impl TileKind {
             ShadeIntolerantForest => Color::hsl(84., 0.3, 0.5),
             ShadeTolerantForest => Color::hsl(84., 0.2, 0.2),
             Water => Color::hsl(210., 0.5, 0.5),
+            Fire => Color::hsl(20., 0.8, 0.5),
         }
     }
 }
