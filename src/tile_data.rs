@@ -8,7 +8,7 @@ impl Plugin for TileDataPlugin {
         // Types need to be manually registered for bevy-inspector-egui
         app.register_type::<Tile>()
             .register_type::<Position>()
-            .register_type::<SuccessionState>();
+            .register_type::<TileKind>();
     }
 }
 
@@ -35,7 +35,7 @@ impl Position {
 }
 
 #[derive(Component, Reflect, PartialEq, Eq, Hash, Debug, Clone, Copy, EnumIter)]
-pub enum SuccessionState {
+pub enum TileKind {
     Meadow,
     Shrubland,
     ShadeIntolerantForest,

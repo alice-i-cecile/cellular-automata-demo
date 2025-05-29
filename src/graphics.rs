@@ -2,7 +2,7 @@ use bevy::{platform::collections::HashMap, prelude::*};
 use strum::IntoEnumIterator;
 
 use crate::control_flow::run_simulation;
-use crate::tile_data::SuccessionState;
+use crate::tile_data::TileKind;
 
 pub struct GraphicsPlugin;
 
@@ -15,14 +15,14 @@ impl Plugin for GraphicsPlugin {
 
 #[derive(Resource, Deref)]
 struct TileImages {
-    colors: HashMap<SuccessionState, Color>,
+    colors: HashMap<TileKind, Color>,
 }
 
 impl FromWorld for TileImages {
     fn from_world(_world: &mut World) -> Self {
         let mut colors = HashMap::new();
 
-        for variant in SuccessionState::iter() {
+        for variant in TileKind::iter() {
             colors.insert(variant, variant.color());
         }
 
@@ -31,7 +31,7 @@ impl FromWorld for TileImages {
 }
 
 fn update_tile_graphics(
-    mut tile_query: Query<(&mut Sprite, &SuccessionState), Changed<SuccessionState>>,
+    mut tile_query: Query<(&mut Sprite, &TileKind), Changed<TileKind>>,
     tile_materials: ResMut<TileImages>,
 ) {
     for (mut sprite, succession_state) in tile_query.iter_mut() {
@@ -45,12 +45,12 @@ fn update_tile_graphics(
     }
 }
 
-impl SuccessionState {
+impl TileKind {
     /// The color associated with this state.
     ///
     /// This is used to determine the color of the tile in the map.
     pub fn color(&self) -> Color {
-        use SuccessionState::*;
+        use TileKind::*;
 
         match self {
             Meadow => Color::hsl(84., 0.7, 0.8),

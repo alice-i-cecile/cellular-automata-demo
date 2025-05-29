@@ -5,7 +5,7 @@ use rand::seq::IndexedRandom;
 use strum::IntoEnumIterator;
 
 use crate::SimState;
-use crate::tile_data::{Position, SuccessionState, Tile};
+use crate::tile_data::{Position, Tile, TileKind};
 
 pub struct MapGenerationPlugin;
 
@@ -30,7 +30,7 @@ struct MapSize {
     height: i32,
 }
 
-impl SuccessionState {
+impl TileKind {
     /// The non-normalized weight of each state in the initial distribution used to generate the initial map.
     ///
     /// Increasing the weight of a state will increase the likelihood of that state appearing in the initial map.
@@ -39,18 +39,18 @@ impl SuccessionState {
     /// or zero to indicate that the state should not appear in the initial map.
     fn initial_distribution_weight(&self) -> f32 {
         match self {
-            SuccessionState::Meadow => 1.0,
-            SuccessionState::Shrubland => 1.0,
-            SuccessionState::ShadeIntolerantForest => 0.0,
-            SuccessionState::ShadeTolerantForest => 0.0,
+            TileKind::Meadow => 1.0,
+            TileKind::Shrubland => 1.0,
+            TileKind::ShadeIntolerantForest => 0.0,
+            TileKind::ShadeTolerantForest => 0.0,
         }
     }
 
     // TODO: use strum for enum iteration
-    fn initial_distribution() -> Vec<(SuccessionState, f32)> {
+    fn initial_distribution() -> Vec<(TileKind, f32)> {
         let mut vec = Vec::new();
 
-        for variant in SuccessionState::iter() {
+        for variant in TileKind::iter() {
             vec.push((variant, variant.initial_distribution_weight()));
         }
 
@@ -59,7 +59,7 @@ impl SuccessionState {
 }
 
 fn spawn_tiles(mut commands: Commands, map_size: Res<MapSize>, mut rng: GlobalEntropy<WyRand>) {
-    let state_weights = SuccessionState::initial_distribution();
+    let state_weights = TileKind::initial_distribution();
 
     // PERF: we could speed this up by using spawn_batch
     // PERF: generating multiple random choices at once is significantly faster than generating them one by one.

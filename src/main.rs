@@ -14,8 +14,11 @@ mod tile_data;
 
 fn main() {
     App::new()
+        // Bevy plugins
         .add_plugins(DefaultPlugins)
+        // Third-party plugins
         .add_plugins(EntropyPlugin::<WyRand>::default())
+        // Crate plugins
         .add_plugins((
             camera::CameraPlugin,
             control_flow::ControlFlowPlugin,
