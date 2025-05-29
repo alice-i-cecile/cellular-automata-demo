@@ -14,6 +14,7 @@ impl Plugin for ControlFlowPlugin {
         app.add_event::<ResetSimulation>()
             .add_event::<PauseSimulation>()
             .add_event::<UnpauseSimulation>()
+            .add_event::<StepSimulation>()
             .add_systems(
                 Update,
                 run_simulation
@@ -26,6 +27,7 @@ impl Plugin for ControlFlowPlugin {
                     reset_simulation_state.run_if(on_event::<ResetSimulation>),
                     pause_simulation.run_if(on_event::<PauseSimulation>),
                     unpause_simulation.run_if(on_event::<UnpauseSimulation>),
+                    step_simulation.run_if(on_event::<StepSimulation>),
                 ),
             );
     }
@@ -74,4 +76,13 @@ fn pause_simulation(mut next_state: ResMut<NextState<SimState>>) {
 fn unpause_simulation(mut next_state: ResMut<NextState<SimState>>) {
     info!("Simulation unpaused.");
     next_state.set(SimState::Run);
+}
+
+#[derive(Event)]
+pub struct StepSimulation;
+
+fn step_simulation(mut commands: Commands) {
+    info!("Stepping simulation by one tick.");
+
+    commands.run_system_cached(run_simulation);
 }

@@ -4,7 +4,10 @@ use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use clap::Parser;
 
-use crate::control_flow::{PauseSimulation, ResetSimulation, UnpauseSimulation};
+use crate::{
+    SimState,
+    control_flow::{PauseSimulation, ResetSimulation, StepSimulation, UnpauseSimulation},
+};
 
 pub struct DevToolsPlugin;
 
@@ -25,7 +28,8 @@ impl Plugin for DevToolsPlugin {
         // as it allows us to easily trigger the same logic via alternative means.
         app.add_console_command::<ResetCommand, _>(reset_command)
             .add_console_command::<PauseCommand, _>(pause_command)
-            .add_console_command::<UnpauseCommand, _>(unpause_command);
+            .add_console_command::<UnpauseCommand, _>(unpause_command)
+            .add_console_command::<StepCommand, _>(step_command);
     }
 }
 
@@ -68,5 +72,32 @@ fn unpause_command(
 ) {
     if console_command.take().is_some() {
         event_writer.write(UnpauseSimulation);
+    }
+}
+
+/// Advances the simulation by one step.
+#[derive(Parser, ConsoleCommand)]
+#[command(name = "step")]
+struct StepCommand;
+
+fn step_command(
+    mut console_command: ConsoleCommand<StepCommand>,
+    mut event_writer: EventWriter<StepSimulation>,
+    state: Res<State<SimState>>,
+    mut next_state: ResMut<NextState<SimState>>,
+) {
+    if console_command.take().is_some() {
+        match state.get() {
+            SimState::Paused => {
+                // If the simulation is paused.
+                event_writer.write(StepSimulation);
+            }
+            SimState::Run | SimState::Generate => {
+                // If the simulation is running, we need to pause it first, then step it.
+                // Otherwise it won't be perceived as a step by the user.
+                next_state.set(SimState::Paused);
+                event_writer.write(StepSimulation);
+            }
+        }
     }
 }
