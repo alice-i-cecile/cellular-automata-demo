@@ -7,7 +7,7 @@ use strum::IntoEnumIterator;
 
 use crate::SimState;
 use crate::simulation::TileKind;
-use crate::tile_data::{Position, Tile};
+use crate::spatial_index::{Position, Tile};
 
 // PERF: these systems would all be faster as exclusive systems to avoid command overhead
 pub struct MapGenerationPlugin;

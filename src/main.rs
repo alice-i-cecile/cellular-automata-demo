@@ -10,7 +10,7 @@ mod dev_tools;
 mod graphics;
 mod map_generation;
 mod simulation;
-mod tile_data;
+mod spatial_index;
 
 fn main() {
     App::new()
@@ -25,7 +25,7 @@ fn main() {
             dev_tools::DevToolsPlugin,
             graphics::GraphicsPlugin,
             map_generation::MapGenerationPlugin,
-            tile_data::TileDataPlugin,
+            spatial_index::TileDataPlugin,
             simulation::TransitionPlugin,
         ))
         .init_state::<SimState>()
