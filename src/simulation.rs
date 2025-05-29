@@ -8,13 +8,18 @@ use rand::seq::IndexedRandom;
 use strum_macros::EnumIter;
 
 use crate::control_flow::Simulation;
+use crate::spatial_index::{Position, TileIndex};
 
 pub struct TransitionPlugin;
 
 impl Plugin for TransitionPlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<TileKind>()
-            .add_systems(Simulation, (undisturbed_succession, start_fires).chain());
+        app.register_type::<TileKind>().add_systems(
+            Simulation,
+            // Using .chain() is a simple but effective way to carefully control system ordering for simulations
+            // In more complex simulations, consider using a vec of systems rather than a Schedule
+            (spread_fires, undisturbed_succession, start_fires).chain(),
+        );
     }
 }
 
@@ -46,6 +51,40 @@ fn start_fires(mut tile_query: Query<&mut TileKind>, mut rng: GlobalEntropy<WyRa
         if fire_roll < tile.fire_susceptibility() {
             // If the tile is susceptible to fire, set it to Fire state
             tile.set_if_neq(TileKind::Fire);
+        }
+    }
+}
+
+#[hot]
+fn spread_fires(
+    tile_query: Query<(&TileKind, &Position)>,
+    mut rng: GlobalEntropy<WyRand>,
+    tile_index: Res<TileIndex>,
+    mut commands: Commands,
+) {
+    // The ratio of fire spread probability to the base fire susceptibility.
+    // This multiplier can be adjusted to control how quickly fire spreads.
+    // Generally this value should be significantly larger than 1.
+    const SPREAD_MULTIPLIER: f64 = 1000.;
+
+    for (tile, position) in tile_query.iter() {
+        if *tile == TileKind::Fire {
+            for neighbors in position.cardinal_neighbors() {
+                if let Some(neighbor_entity) = tile_index.get(&neighbors) {
+                    if let Ok((neighbor_kind, _neighbor_position)) = tile_query.get(neighbor_entity)
+                    {
+                        // Check if the neighboring tile can catch fire
+                        // PERF: like usual, generating random numbers in batch is much faster
+                        let fire_roll = rng.random_range(0.0..1.0);
+                        if fire_roll * SPREAD_MULTIPLIER < neighbor_kind.fire_susceptibility() {
+                            // If the roll passes, set the neighboring tile to Fire state
+                            // We use `Commands` here to avoid pain with mutable borrow rules,
+                            // but also to ensure that the iteration order of `tile_query` does not matter.
+                            commands.entity(neighbor_entity).insert(TileKind::Fire);
+                        }
+                    }
+                }
+            }
         }
     }
 }

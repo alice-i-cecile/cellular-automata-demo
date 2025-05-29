@@ -25,7 +25,7 @@ fn main() {
             dev_tools::DevToolsPlugin,
             graphics::GraphicsPlugin,
             map_generation::MapGenerationPlugin,
-            spatial_index::TileDataPlugin,
+            spatial_index::TilePlugin,
             simulation::TransitionPlugin,
         ))
         .init_state::<SimState>()

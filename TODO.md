@@ -43,8 +43,9 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 ## Fancier automata
 
-- [ ] consider neighboring cells for transitions
-- [ ] add fire to reset state
+- [x] start fires
+- [ ] spread fires
+  - WIP: should work but doesn't T_T
 - [x] add water tiles
 
 ## Better generation
@@ -80,6 +81,7 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 ## Better camera
 
+- [ ] don't let the camera move when using the egui window
 - [ ] scale pan speed with zoom level
 - [ ] drag to pan
 - [ ] automatically scale to extents
