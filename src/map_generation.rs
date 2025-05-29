@@ -15,8 +15,8 @@ impl Plugin for MapGenerationPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<MapSize>()
             .insert_resource(MapSize {
-                width: 10,
-                height: 10,
+                width: 30,
+                height: 30,
             })
             .add_systems(
                 OnEnter(SimState::Generate),
@@ -47,11 +47,14 @@ impl TileKind {
     /// The weights are not normalized, so they can be any positive value,
     /// or zero to indicate that the state should not appear in the initial map.
     fn initial_distribution_weight(&self) -> f32 {
+        use TileKind::*;
+
         match self {
-            TileKind::Meadow => 1.0,
-            TileKind::Shrubland => 1.0,
-            TileKind::ShadeIntolerantForest => 0.0,
-            TileKind::ShadeTolerantForest => 0.0,
+            Meadow => 1.0,
+            Shrubland => 1.0,
+            ShadeIntolerantForest => 0.0,
+            ShadeTolerantForest => 0.0,
+            Water => 1.0,
         }
     }
 
@@ -67,12 +70,14 @@ impl TileKind {
     }
 }
 
+#[hot]
 fn clean_up_sim_state(mut commands: Commands, query: Query<Entity, With<Tile>>) {
     for entity in query.iter() {
         commands.entity(entity).despawn();
     }
 }
 
+#[hot]
 fn spawn_tiles(mut commands: Commands, map_size: Res<MapSize>, mut rng: GlobalEntropy<WyRand>) {
     let state_weights = TileKind::initial_distribution();
 

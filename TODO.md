@@ -45,7 +45,7 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 - [ ] consider neighboring cells for transitions
 - [ ] add fire to reset state
-- [ ] add water tiles
+- [x] add water tiles
 
 ## Better generation
 

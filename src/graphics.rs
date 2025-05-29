@@ -57,6 +57,7 @@ impl TileKind {
             Shrubland => Color::hsl(84., 0.5, 0.5),
             ShadeIntolerantForest => Color::hsl(84., 0.3, 0.5),
             ShadeTolerantForest => Color::hsl(84., 0.2, 0.2),
+            Water => Color::hsl(210., 0.5, 0.5),
         }
     }
 }

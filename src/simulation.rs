@@ -15,10 +15,7 @@ impl Plugin for TransitionPlugin {
     }
 }
 
-fn apply_transition(
-    mut rng: GlobalEntropy<WyRand>,
-    mut succession_query: Query<&mut TileKind>,
-) {
+fn apply_transition(mut rng: GlobalEntropy<WyRand>, mut succession_query: Query<&mut TileKind>) {
     for mut succession_state in succession_query.iter_mut() {
         let new_state = succession_state.transition(&mut rng);
         succession_state.set_if_neq(new_state);
@@ -48,6 +45,9 @@ impl TileKind {
             }
             TileKind::ShadeTolerantForest => {
                 vec![(ShadeTolerantForest, 1.0)]
+            }
+            TileKind::Water => {
+                vec![(Water, 1.0)]
             }
         }
     }

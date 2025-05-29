@@ -40,4 +40,5 @@ pub enum TileKind {
     Shrubland,
     ShadeIntolerantForest,
     ShadeTolerantForest,
+    Water,
 }
