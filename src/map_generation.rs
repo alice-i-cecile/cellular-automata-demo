@@ -4,7 +4,8 @@ use bevy_rand::global::GlobalEntropy;
 use rand::seq::IndexedRandom;
 use strum::IntoEnumIterator;
 
-use crate::{Position, SimState, SuccessionState};
+use crate::SimState;
+use crate::tile_data::{Position, SuccessionState};
 
 pub struct MapGenerationPlugin;
 

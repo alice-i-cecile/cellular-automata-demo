@@ -8,7 +8,8 @@ use bevy_rand::global::GlobalEntropy;
 use bevy_rand::prelude::Entropy;
 use rand::seq::IndexedRandom;
 
-use crate::{SimState, SuccessionState};
+use crate::SimState;
+use crate::tile_data::SuccessionState;
 
 pub struct TransitionPlugin;
 
