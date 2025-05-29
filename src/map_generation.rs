@@ -4,21 +4,26 @@ use bevy_rand::global::GlobalEntropy;
 use rand::seq::IndexedRandom;
 use strum::IntoEnumIterator;
 
-use crate::{Position, SuccessionState};
+use crate::{Position, SimState, SuccessionState};
 
 pub struct MapGenerationPlugin;
 
 impl Plugin for MapGenerationPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(MapSize {
-            width: 10,
-            height: 10,
-        })
-        .add_systems(Startup, spawn_tiles);
+        app.register_type::<MapSize>()
+            .insert_resource(MapSize {
+                width: 10,
+                height: 10,
+            })
+            .add_systems(OnEnter(SimState::Generate), spawn_tiles)
+            .add_systems(
+                Update,
+                finish_generation.run_if(in_state(SimState::Generate)),
+            );
     }
 }
 
-#[derive(Resource)]
+#[derive(Resource, Reflect)]
 struct MapSize {
     width: i32,
     height: i32,
@@ -75,4 +80,9 @@ fn spawn_tiles(mut commands: Commands, map_size: Res<MapSize>, mut rng: GlobalEn
             commands.spawn((position, sprite, transform, succession_state, name));
         }
     }
+}
+
+fn finish_generation(mut next_state: ResMut<NextState<SimState>>) {
+    info!("Map generation complete, transitioning to Run state");
+    next_state.set(SimState::Run);
 }

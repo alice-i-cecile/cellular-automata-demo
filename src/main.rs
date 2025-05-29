@@ -22,10 +22,18 @@ fn main() {
             map_generation::MapGenerationPlugin,
             transition::TransitionPlugin,
         ))
+        .init_state::<SimState>()
         // Types need to be registered for bevy_inspector_egui
         .register_type::<Position>()
         .register_type::<SuccessionState>()
         .run();
+}
+
+#[derive(States, Debug, PartialEq, Eq, Hash, Clone, Default)]
+pub enum SimState {
+    #[default]
+    Generate,
+    Run,
 }
 
 #[derive(Component, Reflect)]

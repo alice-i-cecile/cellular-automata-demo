@@ -8,7 +8,7 @@ use bevy_rand::global::GlobalEntropy;
 use bevy_rand::prelude::Entropy;
 use rand::seq::IndexedRandom;
 
-use crate::SuccessionState;
+use crate::{SimState, SuccessionState};
 
 pub struct TransitionPlugin;
 
@@ -16,7 +16,9 @@ impl Plugin for TransitionPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            run_transition.run_if(on_timer(Duration::from_secs(1))),
+            run_transition
+                .run_if(in_state(SimState::Run))
+                .run_if(on_timer(Duration::from_secs(1))),
         )
         .add_systems(Simulation, apply_transition);
     }
