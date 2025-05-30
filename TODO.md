@@ -72,7 +72,8 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 ## Scenarios
 
-- [] save current state to a preset
+- [] save current map state to a preset
+- [] save and load hyperparameters
 - [] load presets
 - [] GUI for saving and loading scenarios
 
