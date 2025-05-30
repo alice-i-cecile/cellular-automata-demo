@@ -44,8 +44,7 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 ## Fancier automata
 
 - [x] start fires
-- [ ] spread fires
-  - WIP: should work but doesn't T_T
+- [x] spread fires
 - [x] add water tiles
 
 ## Better generation
