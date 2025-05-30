@@ -21,8 +21,8 @@ impl Plugin for MapGenerationPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<MapSize>()
             .insert_resource(MapSize {
-                width: 30,
-                height: 30,
+                width: 50,
+                height: 50,
             })
             .add_systems(
                 OnEnter(SimState::Generate),

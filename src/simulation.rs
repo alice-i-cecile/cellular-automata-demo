@@ -72,7 +72,7 @@ fn spread_fires(
     // The ratio of fire spread probability to the base fire susceptibility.
     // This multiplier can be adjusted to control how quickly fire spreads.
     // Generally this value should be significantly larger than 1.
-    const SPREAD_MULTIPLIER: f64 = 1000.;
+    const SPREAD_MULTIPLIER: f64 = 1e3;
 
     for (tile, position) in tile_query.iter() {
         if *tile == TileKind::Fire {
@@ -83,7 +83,7 @@ fn spread_fires(
                         // Check if the neighboring tile can catch fire
                         // PERF: like usual, generating random numbers in batch is much faster
                         let fire_roll = rng.random_range(0.0..1.0);
-                        if fire_roll * SPREAD_MULTIPLIER < neighbor_kind.fire_susceptibility() {
+                        if fire_roll < neighbor_kind.fire_susceptibility() * SPREAD_MULTIPLIER {
                             // If the roll passes, set the neighboring tile to Fire state
                             // We use `Commands` here to avoid pain with mutable borrow rules,
                             // but also to ensure that the iteration order of `tile_query` does not matter.
@@ -125,7 +125,7 @@ impl TileKind {
             }
             // These values control how long fire will burn before transitioning to another state.
             TileKind::Fire => {
-                vec![(Fire, 1.0), (Meadow, 0.5), (Shrubland, 0.5)]
+                vec![(Fire, 0.5), (Meadow, 0.5), (Shrubland, 0.2)]
             }
         }
     }
@@ -147,13 +147,19 @@ impl TileKind {
     fn fire_susceptibility(&self) -> f64 {
         use TileKind::*;
 
-        match self {
-            Meadow => 0.005,
-            Shrubland => 0.01,
-            ShadeIntolerantForest => 0.01,
-            ShadeTolerantForest => 0.02,
+        // Splitting this out into a constant makes it easier to tweak and reason about
+        // the relative fire susceptibility of different tile kinds.
+        const GLOBAL_FIRE_SUSCEPTIBILITY_MULTIPLIER: f64 = 1e-3;
+
+        let base_value = match self {
+            Meadow => 0.01,
+            Shrubland => 0.2,
+            ShadeIntolerantForest => 0.5,
+            ShadeTolerantForest => 1.0,
             Water => 0.0, // Water cannot catch fire
             Fire => 0.0,  // Fire is already burning
-        }
+        };
+
+        base_value * GLOBAL_FIRE_SUSCEPTIBILITY_MULTIPLIER
     }
 }
