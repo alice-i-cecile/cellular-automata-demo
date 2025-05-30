@@ -49,10 +49,10 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 ## Better generation
 
-- [] use [noiz](https://docs.rs/noiz/latest/noiz/) to seed biome generation
-- [] dynamically modifiable map size
-- [] tunable map generation
-- [] scenarios and presets
+- [] use [noiz](https://docs.rs/noiz/latest/noiz/) to determine water locations
+- [x] dynamically modifiable map size
+- [] tunable map generation via a resource
+- [] expose RNG seed
 
 ## GUI controls
 
@@ -70,12 +70,11 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [ ] create a stats dashboard
 - [ ] create a graph that shows coverage over time
 
-## Ooh shiny
+## Scenarios
 
-- [ ] use sprites for each type of type of terrain
-- [ ] add a map border
-- [ ] visualize transition rules automatically
-- [ ] add sound effects
+- [] save current state to a preset
+- [] load presets
+- [] GUI for saving and loading scenarios
 
 ## Better camera
 
@@ -84,6 +83,13 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [ ] drag to pan
 - [ ] automatically scale to extents
 - [ ] add a bit of momentum to camera pan and zoom
+
+## Ooh shiny
+
+- [ ] use sprites for each type of type of terrain
+- [ ] add a map border
+- [ ] visualize transition rules automatically
+- [ ] add sound effects
 
 ## Key bindings
 
