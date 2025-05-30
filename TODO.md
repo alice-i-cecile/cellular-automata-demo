@@ -90,6 +90,7 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [ ] add a map border
 - [ ] visualize transition rules automatically
 - [ ] add sound effects
+- [ ] mouse-over tooltips for each tile
 
 ## Key bindings
 
