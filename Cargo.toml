@@ -4,14 +4,17 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-bevy = "0.16.0"
-bevy-inspector-egui = "0.31.0"
-bevy_console = "0.14.0"
-bevy_egui = "0.34.1"
-bevy_prng = { version = "0.11.0", features = ["wyrand"] }
-bevy_rand = "0.11.0"
+bevy = { git = "https://github.com/ConnerPetzold/bevy", branch = "cellular-automata-demo" }
+# bevy-inspector-egui = "0.31.0"
+# bevy_console = "0.14.0"
+# bevy_egui = "0.34.1"
+bevy_prng = { git = "https://github.com/ConnerPetzold/bevy_rand", branch = "cellular-automata-demo", features = [
+  "wyrand",
+] }
+bevy_rand = { git = "https://github.com/ConnerPetzold/bevy_rand", branch = "cellular-automata-demo" }
 # Upstream is waiting on a dioxus release; use the git dependency for now
-bevy_simple_subsecond_system = { git = "https://github.com/TheBevyFlock/bevy_simple_subsecond_system", version = "0.2.0" }
+# bevy_simple_subsecond_system = { git = "https://github.com/ConnerPetzold/bevy_simple_subsecond_system", branch = "cellular-automata-demo" }
+bevy_tilemap = { git = "https://github.com/ConnerPetzold/bevy_tilemap", branch = "cellular-automata-demo" }
 clap = "4.5.39"
 rand = "0.9.1"
 strum = "0.27.1"

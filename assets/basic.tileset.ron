@@ -1,0 +1,6 @@
+(
+  tiles: Atlas (
+    image: "basic.tileset.png",
+    tile_size: (32, 32),
+  )
+)
