@@ -3,7 +3,7 @@
 //! These can easily be adapted to any 2D simulation or RTS-style game.
 
 use bevy::{input::mouse::AccumulatedMouseScroll, prelude::*};
-use bevy_simple_subsecond_system::hot;
+// use bevy_simple_subsecond_system::hot;
 
 pub struct CameraPlugin;
 
@@ -18,7 +18,7 @@ fn spawn_camera(mut commands: Commands) {
     commands.spawn(Camera2d);
 }
 
-#[hot]
+// #[hot]
 fn pan_camera(
     mut camera_transform: Single<&mut Transform, With<Camera2d>>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
@@ -53,7 +53,7 @@ fn pan_camera(
     }
 }
 
-#[hot]
+// #[hot]
 fn zoom_camera(
     mut camera_projection: Single<&mut Projection, With<Camera2d>>,
     mousewheel_input: Res<AccumulatedMouseScroll>,

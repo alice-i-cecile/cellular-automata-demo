@@ -10,16 +10,11 @@ pub struct TilePlugin;
 impl Plugin for TilePlugin {
     fn build(&self, app: &mut App) {
         // Types need to be manually registered for bevy-inspector-egui
-        app.register_type::<Tile>()
-            .register_type::<Position>()
+        app.register_type::<Position>()
             .init_resource::<TileIndex>()
             .register_type::<TileIndex>();
     }
 }
-
-/// A tag component for tiles in the map.
-#[derive(Component, Reflect, Default)]
-pub struct Tile;
 
 #[derive(Component, Reflect, PartialEq, Eq, Hash, Debug, Clone, Copy)]
 #[component(immutable, on_insert = add_position_to_index, on_replace = remove_position_from_index)]
@@ -29,16 +24,6 @@ pub struct Position {
 }
 
 impl Position {
-    pub const PIXELS_PER_TILE: f32 = 32.0;
-
-    pub fn to_transform(&self) -> Transform {
-        Transform::from_xyz(
-            self.x as f32 * Self::PIXELS_PER_TILE,
-            self.y as f32 * Self::PIXELS_PER_TILE,
-            0.0,
-        )
-    }
-
     /// Generates the four cardinal neighbors of this position,
     /// to the north, south, east, and west.
     pub fn cardinal_neighbors(&self) -> [Position; 4] {

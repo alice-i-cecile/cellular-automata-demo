@@ -3,10 +3,11 @@ use std::hash::Hash;
 use bevy::prelude::*;
 use bevy_prng::WyRand;
 use bevy_rand::plugin::EntropyPlugin;
+use bevy_tilemap::prelude::*;
 
 mod camera;
 mod control_flow;
-mod dev_tools;
+// mod dev_tools;
 mod graphics;
 mod map_generation;
 mod simulation;
@@ -18,11 +19,12 @@ fn main() {
         .add_plugins(DefaultPlugins)
         // Third-party plugins
         .add_plugins(EntropyPlugin::<WyRand>::default())
+        .add_plugins(TilemapPlugin)
         // Crate plugins
         .add_plugins((
             camera::CameraPlugin,
             control_flow::ControlFlowPlugin,
-            dev_tools::DevToolsPlugin,
+            // dev_tools::DevToolsPlugin,
             graphics::GraphicsPlugin,
             map_generation::MapGenerationPlugin,
             spatial_index::TilePlugin,

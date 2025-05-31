@@ -9,7 +9,7 @@ use bevy::prelude::*;
 use bevy_prng::WyRand;
 use bevy_rand::global::GlobalEntropy;
 use bevy_rand::prelude::Entropy;
-use bevy_simple_subsecond_system::hot;
+// use bevy_simple_subsecond_system::hot;
 use rand::Rng;
 use rand::seq::IndexedRandom;
 use strum_macros::EnumIter;
@@ -40,7 +40,7 @@ pub enum TileKind {
     Fire,
 }
 
-#[hot]
+// #[hot]
 fn undisturbed_succession(
     mut rng: GlobalEntropy<WyRand>,
     mut succession_query: Query<&mut TileKind>,
@@ -51,7 +51,7 @@ fn undisturbed_succession(
     }
 }
 
-#[hot]
+// #[hot]
 fn start_fires(mut tile_query: Query<&mut TileKind>, mut rng: GlobalEntropy<WyRand>) {
     for mut tile in tile_query.iter_mut() {
         let fire_roll = rng.random_range(0.0..1.0);
@@ -62,7 +62,7 @@ fn start_fires(mut tile_query: Query<&mut TileKind>, mut rng: GlobalEntropy<WyRa
     }
 }
 
-#[hot]
+// #[hot]
 fn spread_fires(
     tile_query: Query<(&TileKind, &Position)>,
     mut rng: GlobalEntropy<WyRand>,

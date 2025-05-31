@@ -1,66 +1,43 @@
 //! Renders the graphics for the simulation.
 
-use bevy::{platform::collections::HashMap, prelude::*};
-use strum::IntoEnumIterator;
+use bevy::prelude::*;
+use bevy_tilemap::TileTextureIndex;
 
 use crate::control_flow::run_simulation;
 use crate::simulation::TileKind;
 
 pub struct GraphicsPlugin;
 
+pub const TILE_SIZE: u32 = 32;
+
 impl Plugin for GraphicsPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<TileImages>()
-            .add_systems(Update, update_tile_graphics.after(run_simulation));
-    }
-}
-
-#[derive(Resource, Deref)]
-struct TileImages {
-    colors: HashMap<TileKind, Color>,
-}
-
-impl FromWorld for TileImages {
-    fn from_world(_world: &mut World) -> Self {
-        let mut colors = HashMap::new();
-
-        for variant in TileKind::iter() {
-            colors.insert(variant, variant.color());
-        }
-
-        Self { colors }
+        app.add_systems(Update, update_tile_graphics.after(run_simulation));
     }
 }
 
 fn update_tile_graphics(
-    mut tile_query: Query<(&mut Sprite, &TileKind), Changed<TileKind>>,
-    tile_materials: ResMut<TileImages>,
+    mut tile_query: Query<(&mut TileTextureIndex, &TileKind), Changed<TileKind>>,
 ) {
-    for (mut sprite, succession_state) in tile_query.iter_mut() {
-        let Some(new_color) = tile_materials.get(succession_state) else {
-            warn_once!("Tile graphics not found for {succession_state:?}");
-
-            continue;
-        };
-
-        sprite.color = new_color.clone();
+    for (mut tile_texture_index, succession_state) in tile_query.iter_mut() {
+        tile_texture_index.0 = succession_state.texture_index();
     }
 }
 
 impl TileKind {
-    /// The color associated with this state.
+    /// The texture index associated with this state.
     ///
-    /// This is used to determine the color of the tile in the map.
-    pub fn color(&self) -> Color {
+    /// This is used to determine the texture of the tile in the map.
+    pub fn texture_index(&self) -> u16 {
         use TileKind::*;
 
         match self {
-            Meadow => Color::hsl(84., 0.7, 0.8),
-            Shrubland => Color::hsl(84., 0.5, 0.5),
-            ShadeIntolerantForest => Color::hsl(84., 0.3, 0.5),
-            ShadeTolerantForest => Color::hsl(84., 0.2, 0.2),
-            Water => Color::hsl(210., 0.5, 0.5),
-            Fire => Color::hsl(20., 0.8, 0.5),
+            Meadow => 0,
+            Shrubland => 1,
+            ShadeIntolerantForest => 2,
+            ShadeTolerantForest => 3,
+            Water => 4,
+            Fire => 5,
         }
     }
 }
