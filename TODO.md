@@ -59,6 +59,7 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [x] dynamically modifiable map size
 - [x] use something more interesting for the noise function
 - [ ] expose RNG seed
+  - unsure how to do this; see [the issue I opened](https://github.com/Bluefinger/bevy_rand/issues/51)
 
 ## Live tuning resource-ification
 
