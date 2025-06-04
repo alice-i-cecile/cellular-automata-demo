@@ -47,6 +47,14 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [x] spread fires
 - [x] add water tiles
 
+## Better camera
+
+- [ ] don't let the camera move when using the egui window
+- [ ] scale pan speed with zoom level
+- [ ] drag to pan
+- [ ] automatically scale to extents
+- [ ] add a bit of momentum to camera pan and zoom
+
 ## Better generation
 
 - [] use [noiz](https://docs.rs/noiz/latest/noiz/) to determine water locations
@@ -76,14 +84,6 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [] save and load hyperparameters
 - [] load presets
 - [] GUI for saving and loading scenarios
-
-## Better camera
-
-- [ ] don't let the camera move when using the egui window
-- [ ] scale pan speed with zoom level
-- [ ] drag to pan
-- [ ] automatically scale to extents
-- [ ] add a bit of momentum to camera pan and zoom
 
 ## Ooh shiny
 
