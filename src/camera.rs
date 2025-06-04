@@ -3,14 +3,17 @@
 //! These can easily be adapted to any 2D simulation or RTS-style game.
 
 use bevy::{input::mouse::AccumulatedMouseScroll, prelude::*};
+use bevy_egui::input::egui_wants_any_keyboard_input;
 use bevy_simple_subsecond_system::hot;
 
 pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, spawn_camera)
-            .add_systems(Update, (pan_camera, zoom_camera));
+        app.add_systems(Startup, spawn_camera).add_systems(
+            Update,
+            (pan_camera, zoom_camera).run_if(not(egui_wants_any_keyboard_input)),
+        );
     }
 }
 
