@@ -58,7 +58,7 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [x] use [noiz](https://docs.rs/noiz/latest/noiz/) to determine water locations
 - [x] dynamically modifiable map size
 - [x] use something more interesting for the noise function
-- [ ] tunable map generation via a resource
+- [x] tunable map generation via a resource
 - [ ] expose RNG seed
 
 ## GUI controls

@@ -21,10 +21,11 @@ pub struct MapGenerationPlugin;
 impl Plugin for MapGenerationPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<MapSize>()
-            .insert_resource(MapSize {
-                width: 50,
-                height: 50,
-            })
+            .init_resource::<MapSize>()
+            .register_type::<InitialWeights>()
+            .init_resource::<InitialWeights>()
+            .register_type::<WaterThreshold>()
+            .init_resource::<WaterThreshold>()
             .add_systems(
                 OnEnter(SimState::Generate),
                 (
@@ -52,28 +53,41 @@ struct MapSize {
     height: i32,
 }
 
-impl TileKind {
-    /// The noise threshold in the range of [0, 1] that determines whether a tile is water.
-    ///
-    /// For a uniform noise distribution, this value maps perfectly to the average percentage of water tiles in the generated map.
-    ///
-    /// Increasing this value will result in more water tiles being generated,
-    /// while decreasing it will result in fewer water tiles.
-    /// The value should be in the range [0, 1], where 0 means no water and 1 means all tiles are water.
-    fn water_threshold() -> f32 {
-        0.4
+impl Default for MapSize {
+    fn default() -> Self {
+        // Default map size is 100x100 tiles
+        Self {
+            width: 50,
+            height: 50,
+        }
     }
+}
 
+/// The initial weighting of each tile kind in the initial map generation.
+///
+/// These weights are non-normalized and used to determine the initial distribution of tile kinds in the map.
+/// Increasing the weight of a tile kind will increase the likelihood of that tile kind appearing in the initial map.
+/// Decreasing the weight of a tile kind will decrease the likelihood of that tile kind appearing in the initial map.
+///
+/// The weights are not normalized, so they can be any positive value,
+/// or zero/omitted to indicate that the tile kind should not appear in the initial map.
+#[derive(Resource, Reflect)]
+#[reflect(Resource)]
+struct InitialWeights {
+    weights: Vec<(TileKind, f32)>,
+}
+
+impl InitialWeights {
     /// The non-normalized weight of each state in the initial distribution used to generate the initial map.
     ///
     /// Increasing the weight of a state will increase the likelihood of that state appearing in the initial map.
     /// Decreasing the weight of a state will decrease the likelihood of that state appearing in the initial map.
     /// The weights are not normalized, so they can be any positive value,
     /// or zero to indicate that the state should not appear in the initial map.
-    fn initial_distribution_weight(&self) -> f32 {
+    fn initial_distribution_weight(tile_kind: &TileKind) -> f32 {
         use TileKind::*;
 
-        match self {
+        match tile_kind {
             Meadow => 1.0,
             Shrubland => 1.0,
             ShadeIntolerantForest => 0.0,
@@ -83,17 +97,41 @@ impl TileKind {
             Fire => 0.0,
         }
     }
+}
 
-    fn initial_distribution() -> Vec<(TileKind, f32)> {
-        let mut vec = Vec::new();
+impl Default for InitialWeights {
+    fn default() -> Self {
+        let mut weights = Vec::new();
 
         for variant in TileKind::iter() {
-            vec.push((variant, variant.initial_distribution_weight()));
+            weights.push((variant, Self::initial_distribution_weight(&variant)));
         }
 
-        vec
+        Self { weights }
     }
 }
+
+/// The threshold below which a tile is considered water, in the range of 0.0 to 1.0.
+///
+///
+/// This is used in the initial map generation to determine which tiles are water based on noise values.
+/// For uniformly distributed noise values, this will result in a fraction of the tiles being water
+/// equal to the threshold value.
+///
+/// For example, a threshold of 0.4 means that 40% of the tiles will be water,
+/// while a threshold of 0.2 means that 20% of the tiles will be water,
+/// and a threshold of 1.0 means that all tiles will be water.
+#[derive(Resource, Reflect)]
+#[reflect(Resource)]
+struct WaterThreshold(f32);
+
+impl Default for WaterThreshold {
+    fn default() -> Self {
+        Self(0.4)
+    }
+}
+
+impl TileKind {}
 
 #[hot]
 fn clean_up_sim_state(mut commands: Commands, query: Query<Entity, With<Tile>>) {
@@ -124,6 +162,7 @@ fn spawn_tiles(mut commands: Commands, map_size: Res<MapSize>) {
 fn determine_if_tiles_are_water(
     mut tile_query: Query<(&Position, &mut TileKind)>,
     mut rng: GlobalEntropy<WyRand>,
+    water_threshold: Res<WaterThreshold>,
 ) {
     use noiz::prelude::*;
 
@@ -143,7 +182,7 @@ fn determine_if_tiles_are_water(
         let noise_value: f32 = noise.sample(converted_position);
 
         // If the noise value is below a certain threshold, set the tile to water
-        if noise_value < TileKind::water_threshold() {
+        if noise_value < water_threshold.0 {
             *tile_kind = TileKind::Water;
         }
     }
@@ -151,13 +190,16 @@ fn determine_if_tiles_are_water(
 
 // Water tiles are generated using a different mechanism, and should not be altered
 #[hot]
-fn randomize_land_tiles(mut tile_query: Query<&mut TileKind>, mut rng: GlobalEntropy<WyRand>) {
-    let state_weights = TileKind::initial_distribution();
-
+fn randomize_land_tiles(
+    mut tile_query: Query<&mut TileKind>,
+    mut rng: GlobalEntropy<WyRand>,
+    initial_weights: Res<InitialWeights>,
+) {
     // PERF: generating multiple random choices at once is significantly faster than generating them one by one.
     for mut tile_kind in tile_query.iter_mut() {
         if *tile_kind != TileKind::Water {
-            *tile_kind = state_weights
+            *tile_kind = initial_weights
+                .weights
                 .choose_weighted(&mut rng, |item| item.1)
                 .unwrap()
                 .0;
@@ -173,10 +215,25 @@ fn finish_generation(mut next_state: ResMut<NextState<SimState>>) {
 #[hot]
 fn regenerate_when_settings_change(
     map_size: Res<MapSize>,
+    initial_weights: Res<InitialWeights>,
+    water_threshold: Res<WaterThreshold>,
     mut next_state: ResMut<NextState<SimState>>,
 ) {
     if map_size.is_changed() {
         info!("Map size changed to {:?}, regenerating map", *map_size);
+        next_state.set(SimState::Generate);
+    }
+
+    if initial_weights.is_changed() {
+        info!("Initial weights changed, regenerating map");
+        next_state.set(SimState::Generate);
+    }
+
+    if water_threshold.is_changed() {
+        info!(
+            "Water threshold changed to {:?}, regenerating map",
+            water_threshold.0
+        );
         next_state.set(SimState::Generate);
     }
 }
