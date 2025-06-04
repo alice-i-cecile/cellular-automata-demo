@@ -58,8 +58,8 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [x] use [noiz](https://docs.rs/noiz/latest/noiz/) to determine water locations
 - [x] dynamically modifiable map size
 - [ ] use something more interesting for the noise function
-- [] tunable map generation via a resource
-- [] expose RNG seed
+- [ ] tunable map generation via a resource
+- [ ] expose RNG seed
 
 ## GUI controls
 
@@ -79,10 +79,10 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 ## Scenarios
 
-- [] save current map state to a preset
-- [] save and load hyperparameters
-- [] load presets
-- [] GUI for saving and loading scenarios
+- [ ] save current map state to a preset
+- [ ] save and load hyperparameters
+- [ ] load presets
+- [ ] GUI for saving and loading scenarios
 
 ## Ooh shiny
 
@@ -94,5 +94,5 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 ## Key bindings
 
-- [] swap to `bevy_enhanced_input`
-- [] add a keybindings menu
+- [ ] swap to `bevy_enhanced_input`
+- [ ] add a keybindings menu
