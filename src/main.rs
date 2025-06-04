@@ -8,9 +8,11 @@ mod camera;
 mod control_flow;
 mod dev_tools;
 mod graphics;
+mod gui;
 mod map_generation;
 mod simulation;
 mod spatial_index;
+mod viewport;
 
 fn main() {
     App::new()
@@ -24,9 +26,11 @@ fn main() {
             control_flow::ControlFlowPlugin,
             dev_tools::DevToolsPlugin,
             graphics::GraphicsPlugin,
+            gui::GuiPlugin,
             map_generation::MapGenerationPlugin,
             spatial_index::TilePlugin,
             simulation::TransitionPlugin,
+            viewport::ViewportPlugin,
         ))
         .init_state::<SimState>()
         .run();

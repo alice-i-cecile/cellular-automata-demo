@@ -1,6 +1,8 @@
 //! Camera controls for the simulation.
 //!
 //! These can easily be adapted to any 2D simulation or RTS-style game.
+//!
+//! Note that the camera is spawned in `gui.rs`, to properly layer set it up with the simulation viewport.
 
 use bevy::{input::mouse::AccumulatedMouseScroll, prelude::*};
 use bevy_egui::input::egui_wants_any_keyboard_input;
@@ -12,17 +14,12 @@ pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, spawn_camera)
-            .add_systems(
-                Update,
-                (pan_camera, zoom_camera).run_if(not(egui_wants_any_keyboard_input)),
-            )
-            .add_systems(OnExit(SimState::Generate), adjust_camera_to_map_extents);
+        app.add_systems(
+            Update,
+            (pan_camera, zoom_camera).run_if(not(egui_wants_any_keyboard_input)),
+        )
+        .add_systems(OnExit(SimState::Generate), adjust_camera_to_map_extents);
     }
-}
-
-fn spawn_camera(mut commands: Commands) {
-    commands.spawn(Camera2d);
 }
 
 #[hot]
