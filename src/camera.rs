@@ -20,11 +20,11 @@ fn spawn_camera(mut commands: Commands) {
 
 #[hot]
 fn pan_camera(
-    mut camera_transform: Single<&mut Transform, With<Camera2d>>,
+    mut camera: Single<(&mut Transform, &Projection), With<Camera2d>>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     time: Res<Time>,
 ) {
-    const MOVE_SPEED: f32 = 200.0;
+    const PAN_SPEED: f32 = 400.0;
 
     let move_left =
         keyboard_input.pressed(KeyCode::ArrowLeft) || keyboard_input.pressed(KeyCode::KeyA);
@@ -48,7 +48,19 @@ fn pan_camera(
     let movement = vertical_movement + horizontal_movement;
 
     if movement != Vec3::ZERO {
-        let delta_translation = movement * time.delta_secs() * MOVE_SPEED;
+        let (camera_transform, camera_projection) = &mut *camera;
+
+        let zoom_level = match &*camera_projection {
+            Projection::Orthographic(ortho) => ortho.scale,
+            _ => {
+                error_once!("Panning is only supported for orthographic projections.");
+                return;
+            }
+        };
+
+        // Scale the camera movement by the delta time to make it frame-rate independent
+        // Scale the camera movement by the zoom level to allow easier panning when zoomed out
+        let delta_translation = movement * time.delta_secs() * PAN_SPEED * zoom_level;
         camera_transform.translation += delta_translation;
     }
 }
@@ -59,10 +71,10 @@ fn zoom_camera(
     mousewheel_input: Res<AccumulatedMouseScroll>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
 ) {
-    const KEYBOARD_ZOOM_SPEED: f32 = 0.1;
-    const MOUSE_ZOOM_SPEED: f32 = 0.05;
+    const KEYBOARD_ZOOM_SPEED: f32 = 0.2;
+    const MOUSE_ZOOM_SPEED: f32 = 0.1;
     const MIN_ZOOM: f32 = 0.1;
-    const MAX_ZOOM: f32 = 10.0;
+    const MAX_ZOOM: f32 = 30.0;
 
     let mut zoom = 0.0;
     if keyboard_input.pressed(KeyCode::Equal) || keyboard_input.pressed(KeyCode::NumpadAdd) {
