@@ -21,7 +21,7 @@ impl Plugin for TilePlugin {
 #[derive(Component, Reflect, Default)]
 pub struct Tile;
 
-#[derive(Component, Reflect, PartialEq, Eq, Hash, Debug, Clone, Copy)]
+#[derive(Component, Default, Reflect, PartialEq, Eq, Hash, Debug, Clone, Copy)]
 #[component(immutable, on_insert = add_position_to_index, on_replace = remove_position_from_index)]
 pub struct Position {
     pub x: i32,
