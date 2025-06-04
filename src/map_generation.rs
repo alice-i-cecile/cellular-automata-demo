@@ -7,6 +7,7 @@ use bevy::prelude::*;
 use bevy_prng::WyRand;
 use bevy_rand::global::GlobalEntropy;
 use bevy_simple_subsecond_system::hot;
+use rand::RngCore;
 use rand::seq::IndexedRandom;
 use strum::IntoEnumIterator;
 
@@ -60,7 +61,7 @@ impl TileKind {
     /// while decreasing it will result in fewer water tiles.
     /// The value should be in the range [0, 1], where 0 means no water and 1 means all tiles are water.
     fn water_threshold() -> f32 {
-        0.3
+        -0.3
     }
 
     /// The non-normalized weight of each state in the initial distribution used to generate the initial map.
@@ -120,18 +121,22 @@ fn spawn_tiles(mut commands: Commands, map_size: Res<MapSize>) {
 }
 
 #[hot]
-fn determine_if_tiles_are_water(mut tile_query: Query<(&Position, &mut TileKind)>) {
+fn determine_if_tiles_are_water(
+    mut tile_query: Query<(&Position, &mut TileKind)>,
+    mut rng: GlobalEntropy<WyRand>,
+) {
     use noiz::prelude::*;
 
     // This is an example of perlin noise!
     // noiz is an incredibly powerful library for generating noise,
     // read its docs for more options!
-    let noise = Noise::<PerCell<OrthoGrid, Random<UNorm, f32>>>::default();
+    let mut noise = Noise::<MixCellGradients<OrthoGrid, Smoothstep, QuickGradients>>::default();
+    noise.set_period(5.0);
+    noise.set_seed(rng.next_u32());
 
     for (&position, mut tile_kind) in tile_query.iter_mut() {
         let converted_position = Vec2::new(position.x as f32, position.y as f32);
 
-        // TODO: actually pass in the global rng for deterministic map generation
         let noise_value: f32 = noise.sample(converted_position);
 
         // If the noise value is below a certain threshold, set the tile to water
