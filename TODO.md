@@ -58,8 +58,14 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 - [x] use [noiz](https://docs.rs/noiz/latest/noiz/) to determine water locations
 - [x] dynamically modifiable map size
 - [x] use something more interesting for the noise function
-- [x] tunable map generation via a resource
 - [ ] expose RNG seed
+
+## Live tuning resource-ification
+
+- [x] tunable map generation via a resource
+- [x] tunable fire spread via resource-ification
+- [x] tunable fire susceptibility via resource-ification
+- [x] tunable transition probabilities via resource-ification
 
 ## GUI controls
 
