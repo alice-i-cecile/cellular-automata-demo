@@ -61,7 +61,7 @@ impl TileKind {
     /// while decreasing it will result in fewer water tiles.
     /// The value should be in the range [0, 1], where 0 means no water and 1 means all tiles are water.
     fn water_threshold() -> f32 {
-        -0.3
+        0.4
     }
 
     /// The non-normalized weight of each state in the initial distribution used to generate the initial map.
@@ -130,7 +130,10 @@ fn determine_if_tiles_are_water(
     // This is an example of perlin noise!
     // noiz is an incredibly powerful library for generating noise,
     // read its docs for more options!
-    let mut noise = Noise::<MixCellGradients<OrthoGrid, Smoothstep, QuickGradients>>::default();
+    let mut noise = Noise::<(
+        MixCellGradients<OrthoGrid, Smoothstep, QuickGradients>,
+        SNormToUNorm,
+    )>::default();
     noise.set_period(5.0);
     noise.set_seed(rng.next_u32());
 
