@@ -133,10 +133,6 @@ fn determine_if_tiles_are_water(mut tile_query: Query<(&Position, &mut TileKind)
 
         // TODO: actually pass in the global rng for deterministic map generation
         let noise_value: f32 = noise.sample(converted_position);
-        info!(
-            "Noise value for tile ({}, {}): {}",
-            position.x, position.y, noise_value
-        );
 
         // If the noise value is below a certain threshold, set the tile to water
         if noise_value < TileKind::water_threshold() {
