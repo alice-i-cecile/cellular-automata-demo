@@ -6,14 +6,18 @@ use bevy::{input::mouse::AccumulatedMouseScroll, prelude::*};
 use bevy_egui::input::egui_wants_any_keyboard_input;
 use bevy_simple_subsecond_system::hot;
 
+use crate::SimState;
+
 pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, spawn_camera).add_systems(
-            Update,
-            (pan_camera, zoom_camera).run_if(not(egui_wants_any_keyboard_input)),
-        );
+        app.add_systems(Startup, spawn_camera)
+            .add_systems(
+                Update,
+                (pan_camera, zoom_camera).run_if(not(egui_wants_any_keyboard_input)),
+            )
+            .add_systems(OnExit(SimState::Generate), adjust_camera_to_map_extents);
     }
 }
 
@@ -102,6 +106,64 @@ fn zoom_camera(
             _ => {
                 error_once!("Zooming is only supported for orthographic projections.");
             }
+        }
+    }
+}
+
+// This system could be simpler and faster, and quickly compute the extents of the map
+// based on the map and tile sizes. A more general solution is used here to allow for
+// easier reuse and robustness to strange setups.
+#[hot]
+fn adjust_camera_to_map_extents(
+    mut camera: Single<(&mut Transform, &mut Projection), With<Camera2d>>,
+    tile_query: Query<(&Sprite, &GlobalTransform)>,
+    sprite_assets: Res<Assets<Image>>,
+) {
+    // Tuning lever value selected based on what looks nice!
+    const DEFAULT_ZOOM_LEVEL: f32 = 1.5e-3;
+
+    // Compute the axis-aligned bounding box of the map by examining all tiles
+    let mut lower_left = Vec3::new(f32::MAX, f32::MAX, 0.0);
+    let mut upper_right = Vec3::new(f32::MIN, f32::MIN, 0.0);
+
+    for (sprite, global_transform) in tile_query.iter() {
+        let size = if let Some(size) = sprite.custom_size {
+            size
+        } else if let Some(image) = sprite_assets.get(&sprite.image) {
+            Vec2::new(image.width() as f32, image.height() as f32)
+        } else {
+            warn_once!("Tile sprite has no custom size and no image has been loaded for it.");
+            continue;
+        };
+
+        let half_size = size / 2.0;
+        let position = global_transform.translation();
+
+        lower_left.x = lower_left.x.min(position.x - half_size.x);
+        lower_left.y = lower_left.y.min(position.y - half_size.y);
+        upper_right.x = upper_right.x.max(position.x + half_size.x);
+        upper_right.y = upper_right.y.max(position.y + half_size.y);
+    }
+
+    let center = (lower_left + upper_right) / 2.0;
+    let scale = (upper_right - lower_left).length();
+
+    let (camera_transform, camera_projection) = &mut *camera;
+
+    // Center the camera
+    camera_transform.translation = Vec3::new(center.x, center.y, camera_transform.translation.z);
+
+    // Adjust the zoom level
+    match &mut **camera_projection {
+        Projection::Orthographic(ortho) => {
+            let new_zoom = scale * DEFAULT_ZOOM_LEVEL;
+            info!(
+                "Adjusting camera zoom to {new_zoom} based on map extents of {lower_left}, {upper_right}."
+            );
+            ortho.scale = new_zoom;
+        }
+        _ => {
+            error_once!("Adjusting camera extents is only supported for orthographic projections.");
         }
     }
 }

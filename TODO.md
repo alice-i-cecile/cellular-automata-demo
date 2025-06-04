@@ -51,7 +51,7 @@ This project is open source! Feel free to pitch in to improve it, and tick off i
 
 - [x] don't let the camera move when using the egui window
 - [x] scale pan speed with zoom level
-- [ ] automatically scale to extents
+- [x] automatically scale to extents
 
 ## Better generation
 
